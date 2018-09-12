@@ -205,8 +205,9 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
     |> Enum.reduce(swagger_map, &merge_definitions/2)
   end
 
+  # NOTE: custom implementation to match Chiron Core controller directory structure
   defp find_controller(route_map) do
-    Module.concat([:Elixir | Module.split(route_map.plug)])
+    Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.verb |> Atom.to_string |> Macro.camelize])
   end
 
   defp merge_definitions(definitions, swagger_map = %{definitions: existing}) do
