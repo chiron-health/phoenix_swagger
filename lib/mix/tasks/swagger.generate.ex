@@ -209,7 +209,7 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
   defp find_controller(route_map) do
     nested_controller = Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
 
-    if function_exported?(nested_controller, :swagger_definitions, 0) do
+    if Code.ensure_compiled?(nested_controller) do
       nested_controller
     else
       Module.concat([:Elixir | Module.split(route_map.plug)])
