@@ -210,7 +210,9 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
     try do
       Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
     rescue
-      Module.concat([:Elixir | Module.split(route_map.plug)])
+      _e -> Module.concat([:Elixir | Module.split(route_map.plug)])
+    catch
+      _e -> Module.concat([:Elixir | Module.split(route_map.plug)])
     end
   end
 
