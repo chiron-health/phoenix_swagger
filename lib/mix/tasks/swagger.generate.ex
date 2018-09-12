@@ -207,12 +207,12 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
 
   # NOTE: custom implementation to match Chiron Core controller directory structure
   defp find_controller(route_map) do
-    try do
-      Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
-    rescue
-      _e -> Module.concat([:Elixir | Module.split(route_map.plug)])
-    catch
-      _e -> Module.concat([:Elixir | Module.split(route_map.plug)])
+    nested_controller = Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
+
+    if function_exported?(nested_controller, :swagger_definitions, 0) do
+      nested_controller
+    else
+      Module.concat([:Elixir | Module.split(route_map.plug)])
     end
   end
 
