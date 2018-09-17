@@ -219,11 +219,6 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
 
   # NOTE: custom implementation to match Chiron Core controller directory structure
   defp find_view(route_map) do
-    Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
-    |> to_string
-    |> String.replace(~r/Controller/, "View")
-    |> String.to_existing_atom
-
     try do
       Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
       |> to_string
