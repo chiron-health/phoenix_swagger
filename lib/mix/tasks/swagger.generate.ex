@@ -199,6 +199,7 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
   defp collect_definitions(swagger_map, router) do
     router.__routes__()
     |> Enum.map(&find_controller/1)
+    |> Enum.map(&find_view/1)
     |> Enum.uniq()
     |> Enum.filter(&function_exported?(&1, :swagger_definitions, 0))
     |> Enum.map(&apply(&1, :swagger_definitions, []))
@@ -213,6 +214,27 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
       nested_controller
     else
       Module.concat([:Elixir | Module.split(route_map.plug)])
+    end
+  end
+
+  # NOTE: custom implementation to match Chiron Core controller directory structure
+  defp find_view(route_map) do
+    Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
+    |> to_string
+    |> String.replace(~r/Controller/, "View")
+    |> String.to_existing_atom
+
+    try do
+      Module.concat([:Elixir | Module.split(route_map.plug)] ++ [route_map.opts |> Atom.to_string |> Macro.camelize])
+      |> to_string
+      |> String.replace(~r/Controller/, "View")
+      |> String.to_existing_atom
+    rescue
+      e in ArgumentError ->
+      Module.concat([:Elixir | Module.split(route_map.plug)])
+      |> to_string
+      |> String.replace(~r/Controller/, "View")
+      |> String.to_existing_atom
     end
   end
 
