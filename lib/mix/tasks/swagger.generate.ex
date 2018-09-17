@@ -198,12 +198,15 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
 
   defp collect_definitions(swagger_map, router) do
     router.__routes__()
-    |> Enum.map(&find_controller/1)
-    |> Enum.map(&find_view/1)
+    |> find_modules
     |> Enum.uniq()
     |> Enum.filter(&function_exported?(&1, :swagger_definitions, 0))
     |> Enum.map(&apply(&1, :swagger_definitions, []))
     |> Enum.reduce(swagger_map, &merge_definitions/2)
+  end
+
+  defp find_modules(list_route_maps) do
+    Enum.map(list_route_maps ,&find_controller/1) ++ Enum.map(list_route_maps ,&find_view/1)
   end
 
   # NOTE: custom implementation to match Chiron Core controller directory structure
