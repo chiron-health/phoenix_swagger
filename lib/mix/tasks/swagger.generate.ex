@@ -206,7 +206,7 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
   end
 
   defp find_modules(list_route_maps) do
-    Enum.map(list_route_maps ,&find_controller/1) ++ find_json_serializers
+    Enum.map(list_route_maps ,&find_controller/1)# ++ find_json_serializers
   end
 
   # NOTE: custom implementation to match Chiron Core controller directory structure
