@@ -206,7 +206,7 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
   end
 
   defp find_modules(list_route_maps) do
-    Enum.map(list_route_maps ,&find_controller/1) ++ Enum.map(list_route_maps ,&find_view/1)
+    Enum.map(list_route_maps ,&find_controller/1) ++ find_json_serializers
   end
 
   # NOTE: custom implementation to match Chiron Core controller directory structure
@@ -234,6 +234,13 @@ defmodule Mix.Tasks.Phx.Swagger.Generate do
       |> to_string
       |> String.replace(~r/Controller/, "View")
       |> String.to_atom
+    end
+  end
+
+  # NOTE: custom implementation to match Chiron Core controller directory structure
+  defp find_json_serializers do
+    with {:ok, list} <- :application.get_key(:core, :modules) do
+      list |> Enum.filter(fn mod -> Atom.to_string(mod) =~ "JsonSerializer" end)
     end
   end
 
